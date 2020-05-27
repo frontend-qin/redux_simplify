@@ -16,3 +16,5 @@
 - 整个应用的 state 被存储在 一颗 object tree 中， 并且这个 object tree 只存在于唯一 一个 store 中
 - State 是只读的， 唯一改变 state 的方法， 就是触发 action， action 是一个用于描述已发生事件的普通对象， 使用纯函数来执行修改， 为了描述 action 如何改变 state tree， 就需要编写 reducers
 - 单一数据源的设计让 React 组件之间的通信更加方便，便于状态的统一管理
+
+# 4. 20 行代码一步步，手写 redux
