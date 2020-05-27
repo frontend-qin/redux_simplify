@@ -37,6 +37,7 @@ function createStore() {
 }
 
 let store = createStore()
+
 store.dispatch({
   type: CHANGE_NAME,
 })
