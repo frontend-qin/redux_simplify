@@ -18,3 +18,29 @@
 - 单一数据源的设计让 React 组件之间的通信更加方便，便于状态的统一管理
 
 # 4. 20 行代码一步步，手写 redux
+
+```javascript
+function createStore(reducer) {
+  let state
+  let listeners = []
+  function getState() {
+    return state
+  }
+  function dispatch(action) {
+    state = reducer(state, action)
+    listeners.forEach((fn) => fn())
+  }
+  dispatch({ type: '@@REDUX_INIT' })
+  function subscribe(listener) {
+    listeners.push(listener)
+    return function () {
+      listeners = listeners.filter((fn) => fn !== listener)
+    }
+  }
+  return {
+    getState,
+    dispatch,
+    subscribe,
+  }
+}
+```
