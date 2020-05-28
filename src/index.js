@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import { createStore } from './redux'
+import { createStore, bindActionCreators } from './redux'
 const ADD = 'ADD'
 const CUT = 'CUT'
 
@@ -12,7 +12,7 @@ function reducer(state = { num: 1 }, action) {
       }
     case CUT:
       return {
-        num: state.num - 1,
+        num: state.num - action.num,
       }
     default:
       return state
@@ -20,6 +20,18 @@ function reducer(state = { num: 1 }, action) {
 }
 
 let store = createStore(reducer)
+
+let add = () => ({
+  type: ADD,
+})
+let cut = (p) => ({
+  type: CUT,
+  num: p,
+})
+
+add = bindActionCreators(add, store.dispatch)
+
+cut = bindActionCreators(cut, store.dispatch)
 
 class App extends Component {
   constructor(props) {
@@ -36,12 +48,13 @@ class App extends Component {
   componentWillUnmount() {
     this.unsubscribe()
   }
+
   render() {
     return (
       <div>
         <p>{this.state.num}</p>
-        <button onClick={() => store.dispatch({ type: ADD })}>+</button>
-        <button onClick={() => store.dispatch({ type: CUT })}>-</button>
+        <button onClick={add}>+</button>
+        <button onClick={() => cut(3)}>-</button>
       </div>
     )
   }
