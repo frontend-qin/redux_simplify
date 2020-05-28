@@ -40,10 +40,10 @@ let actions = {
       type: ADD,
     }
   },
-  cut(p) {
+  cut(num) {
     return {
       type: CUT,
-      num: p,
+      num,
     }
   },
 }
