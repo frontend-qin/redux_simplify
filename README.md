@@ -44,3 +44,24 @@ function createStore(reducer) {
   }
 }
 ```
+
+# 5. bindActionCreators
+
+```javascript
+export default function bindActionCreators(actionCreators, dispatch) {
+  function bindActionCreator(actionCreator, dispatch) {
+    return (...args) => dispatch(actionCreator(...args))
+  }
+  // 判断bindActionCreators 参数可能是函数， 也可能是对象
+  if (typeof actionCreators === 'function') {
+    return bindActionCreator(actionCreators, dispatch)
+  }
+  // 如果是对象
+  let boundActionCreators = {}
+  // 循环这个对象
+  for (const key in actionCreators) {
+    boundActionCreators[key] = bindActionCreator(actionCreators[key], dispatch)
+  }
+  return boundActionCreators
+}
+```
