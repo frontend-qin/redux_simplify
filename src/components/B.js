@@ -10,6 +10,7 @@ class B extends PureComponent {
         <p>B组件 - {this.props.num}</p>
         <button onClick={this.props.add}>+</button>
         <button onClick={this.props.jian}>-</button>
+        <button onClick={this.props.asyncAdd}>异步+</button>
       </>
     );
   }

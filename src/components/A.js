@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from './../react-redux';
-import actions from './../store/actions/a';
+// import actions from './../store/actions/a';
 class A extends PureComponent {
   render() {
     console.log('A render');
