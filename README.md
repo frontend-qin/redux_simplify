@@ -124,7 +124,7 @@ export default function connect(mapStateToProps, actions) {
 }
 ```
 
-#### 7. 实现 redux 中间价
+#### 7. 实现 redux 中间件
 
 ```javascript
 import compose from './compose';
