@@ -7,7 +7,7 @@ function add2(str) {
 function add3(str) {
   return '3' + str;
 }
-// console.log(add3(add2(add1('hello'))));
+console.log(add3(add2(add1('hello'))));
 
 function compose(...fns) {
   if (fns.length === 0) return (args) => args;

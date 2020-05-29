@@ -6,4 +6,12 @@ import combineReducers from './combineReducers';
 
 import applyMiddleWare from './applyMiddleWare';
 
-export { createStore, bindActionCreators, combineReducers, applyMiddleWare };
+import compose from './compose';
+
+export {
+  createStore,
+  bindActionCreators,
+  combineReducers,
+  applyMiddleWare,
+  compose,
+};
