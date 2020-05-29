@@ -99,7 +99,7 @@ class Provider extends Component {
 export default Provider;
 ```
 
-connect.js
+- connect.js
 
 ```javascript
 import React, { Component } from 'react';
