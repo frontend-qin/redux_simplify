@@ -13,7 +13,7 @@ export default function connect(mapStateToProps, actions) {
         // 实现 `- actions  -` 是函数的情况
         this.boundActions =
           typeof actions === 'function'
-            ? actions(context.dispatch)
+            ? actions(context.dispatch, props)
             : bindActionCreators(actions, context.dispatch);
       }
       componentDidMount() {
