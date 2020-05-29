@@ -9,6 +9,8 @@ export default function connect(mapStateToProps, actions) {
       constructor(props, context) {
         super(props, context);
         this.state = mapStateToProps(context.getState());
+        // 优化，进行浅比较
+        this.boundActions = bindActionCreators(actions, context.dispatch);
       }
       componentDidMount() {
         // console.log(this.context);
@@ -21,12 +23,7 @@ export default function connect(mapStateToProps, actions) {
         this.unsubscribe();
       }
       render() {
-        return (
-          <WarpedComponent
-            {...this.state}
-            {...bindActionCreators(actions, this.context.dispatch)}
-          />
-        );
+        return <WarpedComponent {...this.state} {...this.boundActions} />;
       }
     };
   };

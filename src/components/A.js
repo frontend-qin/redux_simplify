@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from './../react-redux';
 import actions from './../store/actions/a';
-class A extends Component {
+class A extends PureComponent {
   render() {
+    console.log('A render');
+
     return (
       <>
         <p>A组件 - {this.props.num}</p>
