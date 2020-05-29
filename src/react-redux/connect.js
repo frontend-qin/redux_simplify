@@ -12,19 +12,26 @@ export default function connect(mapStateToProps, actions) {
       }
       componentDidMount() {
         // console.log(this.context);
-        const { context } = this;
-        this.unsubscribe = context.subscribe(() =>
-          this.setState(mapStateToProps(context.getState())),
+        const {
+          context: { subscribe, getState },
+        } = this;
+
+        this.unsubscribe = subscribe(() =>
+          this.setState(mapStateToProps(getState())),
         );
       }
       componentWillUnmount() {
         this.unsubscribe();
       }
       render() {
+        const {
+          state,
+          context: { dispatch },
+        } = this;
         return (
           <WarpedComponent
-            {...this.state}
-            {...bindActionCreators(actions, this.context.dispatch)}
+            {...state}
+            {...bindActionCreators(actions, dispatch)}
           />
         );
       }

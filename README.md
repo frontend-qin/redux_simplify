@@ -21,27 +21,27 @@
 
 ```javascript
 function createStore(reducer) {
-  let state
-  let listeners = []
+  let state;
+  let listeners = [];
   function getState() {
-    return state
+    return state;
   }
   function dispatch(action) {
-    state = reducer(state, action)
-    listeners.forEach((fn) => fn())
+    state = reducer(state, action);
+    listeners.forEach((fn) => fn());
   }
-  dispatch({ type: '@@REDUX_INIT' })
+  dispatch({ type: '@@REDUX_INIT' });
   function subscribe(listener) {
-    listeners.push(listener)
+    listeners.push(listener);
     return function () {
-      listeners = listeners.filter((fn) => fn !== listener)
-    }
+      listeners = listeners.filter((fn) => fn !== listener);
+    };
   }
   return {
     getState,
     dispatch,
     subscribe,
-  }
+  };
 }
 ```
 
@@ -50,18 +50,93 @@ function createStore(reducer) {
 ```javascript
 export default function bindActionCreators(actionCreators, dispatch) {
   function bindActionCreator(actionCreator, dispatch) {
-    return (...args) => dispatch(actionCreator(...args))
+    return (...args) => dispatch(actionCreator(...args));
   }
   // 判断bindActionCreators 参数可能是函数， 也可能是对象
   if (typeof actionCreators === 'function') {
-    return bindActionCreator(actionCreators, dispatch)
+    return bindActionCreator(actionCreators, dispatch);
   }
   // 如果是对象
-  let boundActionCreators = {}
+  let boundActionCreators = {};
   // 循环这个对象
   for (const key in actionCreators) {
-    boundActionCreators[key] = bindActionCreator(actionCreators[key], dispatch)
+    boundActionCreators[key] = bindActionCreator(actionCreators[key], dispatch);
   }
-  return boundActionCreators
+  return boundActionCreators;
+}
+```
+
+# 6. 实现 react-redux
+
+- index.js
+
+```javascript
+import Provider from './Provider';
+import connect from './connect';
+export { Provider, connect };
+```
+
+- context.js
+
+```javascript
+import React from 'react';
+export default React.createContext();
+```
+
+- Provider.js
+
+```javascript
+import React, { Component } from 'react';
+import ReduxContext from './context';
+class Provider extends Component {
+  render() {
+    const { store, children } = this.props;
+    return (
+      <ReduxContext.Provider value={store}>{children}</ReduxContext.Provider>
+    );
+  }
+}
+export default Provider;
+```
+
+```javascript
+import React, { Component } from 'react';
+import ReduxContext from './context';
+import { bindActionCreators } from '../redux';
+
+export default function connect(mapStateToProps, actions) {
+  return function (WarpedComponent) {
+    return class extends Component {
+      static contextType = ReduxContext;
+      constructor(props, context) {
+        super(props, context);
+        this.state = mapStateToProps(context.getState());
+      }
+      componentDidMount() {
+        const {
+          context: { subscribe, getState },
+        } = this;
+
+        this.unsubscribe = subscribe(() =>
+          this.setState(mapStateToProps(getState())),
+        );
+      }
+      componentWillUnmount() {
+        this.unsubscribe();
+      }
+      render() {
+        const {
+          state,
+          context: { dispatch },
+        } = this;
+        return (
+          <WarpedComponent
+            {...state}
+            {...bindActionCreators(actions, dispatch)}
+          />
+        );
+      }
+    };
+  };
 }
 ```
