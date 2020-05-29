@@ -9,6 +9,12 @@ export default function connect(mapStateToProps, actions) {
       constructor(props, context) {
         super(props, context);
         this.state = mapStateToProps(context.getState());
+        // 优化，进行浅比较（PurComponent 只比较第一层）
+        // 实现 `- actions  -` 是函数的情况
+        this.boundActions =
+          typeof actions === 'function'
+            ? actions(context.dispatch, props)
+            : bindActionCreators(actions, context.dispatch);
       }
       componentDidMount() {
         // console.log(this.context);
@@ -24,16 +30,7 @@ export default function connect(mapStateToProps, actions) {
         this.unsubscribe();
       }
       render() {
-        const {
-          state,
-          context: { dispatch },
-        } = this;
-        return (
-          <WarpedComponent
-            {...state}
-            {...bindActionCreators(actions, dispatch)}
-          />
-        );
+        return <WarpedComponent {...this.state} {...this.boundActions} />;
       }
     };
   };
