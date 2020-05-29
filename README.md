@@ -142,3 +142,113 @@ export default function connect(mapStateToProps, actions) {
   };
 }
 ```
+
+# 7. 实现 redux 中间价
+
+```javascript
+import compose from './compose';
+export default function applyMiddleWare(...middleWares) {
+  return function (createStore) {
+    return function (...args) {
+      let store = createStore(...args);
+      let dispatch;
+      let middleWareAPI = {
+        getState: store.getState,
+        dispatch: (...args) => dispatch(...args),
+      };
+      const chain = middleWares.map((middleWare) => middleWare(middleWareAPI));
+
+      dispatch = compose(...chain)(store.dispatch);
+      return {
+        ...store,
+        dispatch,
+      };
+    };
+  };
+}
+```
+
+# 8. 实现 compose
+
+```javascript
+export default function compose(...fns) {
+  if (fns.length === 0) return (args) => args;
+  if (fns.length === 1) return (...args) => fns[0](...args);
+  return fns.reduce((a, b) => (...args) => a(b(...args)));
+}
+```
+
+# 9. 实现 compose
+
+```javascript
+export default function compose(...fns) {
+  if (fns.length === 0) return (args) => args;
+  if (fns.length === 1) return (...args) => fns[0](...args);
+  return fns.reduce((a, b) => (...args) => a(b(...args)));
+}
+```
+
+# 10. 实现 合并 reducer
+
+```javascript
+export default function combineReducers(reducers) {
+  let reducerKeys = Object.keys(reducers);
+  return function (state = {}, action) {
+    let hasChanged = false;
+    const nextState = {};
+    for (let i = 0; i < reducerKeys.length; i++) {
+      const key = reducerKeys[i];
+      const previousStateForKey = state[key];
+      let nextStateForKey = reducers[key](previousStateForKey, action);
+      nextState[key] = nextStateForKey;
+      hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
+    }
+    return hasChanged ? nextState : state;
+  };
+}
+```
+
+# 11. 实现一个中间件 redux-logger
+
+```javascript
+export default function ({ getState }) {
+  return function (next) {
+    return function (action) {
+      console.log(`老状态: ${JSON.parse(JSON.stringify(getState()))}`);
+      next(action);
+      console.log(`新状态: ${JSON.parse(JSON.stringify(getState()))}`);
+    };
+  };
+}
+```
+
+# 12. 实现一个中间件 redux-thunk
+
+```javascript
+export default function ({ dispatch }) {
+  return function (next) {
+    return function (action) {
+      typeof action === 'function' ? action(dispatch) : next(action);
+    };
+  };
+}
+```
+
+# 13. 实现一个中间件 redux-promise
+
+```javascript
+export default function ({ dispatch }) {
+  return function (next) {
+    return function (action) {
+      // 判断 参数是不是 Promise 的实例(不严谨)
+      action && action.payload instanceof Promise
+        ? action.payload
+            .then((res) => dispatch({ ...action, payload: res }))
+            .catch((error) => {
+              console.log(error);
+            })
+        : next(action);
+    };
+  };
+}
+```
