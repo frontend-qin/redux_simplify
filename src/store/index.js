@@ -8,7 +8,7 @@ function compose(...fns) {
   return fns.reduce((a, b) => (...args) => a(b(...args)));
 }
 
-const logger = function ({ getState, dispatch }) {
+const logger = function ({ getState }) {
   return function (next) {
     // next 是调用原生的dispatch 方法
     return function (action) {
@@ -33,6 +33,23 @@ const thunk = function ({ dispatch }) {
   };
 };
 
+// promise 中间件
+const promise = function ({ dispatch }) {
+  return function (next) {
+    return function (action) {
+      // 判断 参数是不是 Promise 的实例
+      action && action.payload instanceof Promise
+        ? action.payload
+            .then((res) => dispatch({ ...action, payload: res }))
+            .catch((error) => {
+              // 处理错误
+              console.log(error);
+            })
+        : next(action);
+    };
+  };
+};
+
 function applyMiddleWare(...middleWares) {
   return function (createStore) {
     return function (...args) {
@@ -52,7 +69,7 @@ function applyMiddleWare(...middleWares) {
     };
   };
 }
-
-let store = applyMiddleWare(thunk, logger)(createStore)(reducers);
+// 中间件执行是有顺序的
+let store = applyMiddleWare(promise, thunk, logger)(createStore)(reducers);
 
 export default store;

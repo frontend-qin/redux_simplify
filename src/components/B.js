@@ -11,6 +11,7 @@ class B extends PureComponent {
         <button onClick={this.props.add}>+</button>
         <button onClick={this.props.jian}>-</button>
         <button onClick={this.props.asyncAdd}>异步+</button>
+        <button onClick={this.props.promiseAdd}>promise+</button>
       </>
     );
   }

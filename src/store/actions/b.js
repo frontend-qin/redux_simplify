@@ -18,4 +18,14 @@ export default {
       }, 1000);
     };
   },
+  promiseAdd() {
+    return {
+      type: ADDB,
+      payload: new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(5);
+        }, 1000);
+      }),
+    };
+  },
 };
