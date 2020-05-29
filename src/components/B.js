@@ -1,33 +1,16 @@
-import React, { Component } from 'react'
-import store from './../store'
-
-import { bindActionCreators } from './../redux'
-
-import b from '../store/actions/b'
-
-const boundAction = bindActionCreators(b, store.dispatch)
-
+import React, { Component } from 'react';
+import { connect } from './../react-redux';
+import actions from './../store/actions/b';
 class B extends Component {
-  state = {
-    num: store.getState().b.num,
-  }
-  componentDidMount() {
-    this.unsubscribe = store.subscribe(() =>
-      this.setState({ num: store.getState().b.num }),
-    )
-  }
-  componentWillUnmount() {
-    this.unsubscribe()
-  }
   render() {
     return (
-      <div>
-        <p>{this.state.num}</p>
-        <button onClick={boundAction.add}>+</button>
-        <button onClick={boundAction.jian}>-</button>
-      </div>
-    )
+      <>
+        <p>B组件 - {this.props.num}</p>
+        <button onClick={this.props.add}>+</button>
+        <button onClick={this.props.jian}>-</button>
+      </>
+    );
   }
 }
-
-export default B
+let mapStateToProps = (state) => state.b;
+export default connect(mapStateToProps, actions)(B);
