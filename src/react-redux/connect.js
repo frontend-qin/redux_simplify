@@ -9,8 +9,12 @@ export default function connect(mapStateToProps, actions) {
       constructor(props, context) {
         super(props, context);
         this.state = mapStateToProps(context.getState());
-        // 优化，进行浅比较
-        this.boundActions = bindActionCreators(actions, context.dispatch);
+        // 优化，进行浅比较（PurComponent 只比较第一层）
+        // 实现 `- actions  -` 是函数的情况
+        this.boundActions =
+          typeof actions === 'function'
+            ? actions(context.dispatch)
+            : bindActionCreators(actions, context.dispatch);
       }
       componentDidMount() {
         // console.log(this.context);

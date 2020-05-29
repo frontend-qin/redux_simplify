@@ -17,4 +17,13 @@ class A extends PureComponent {
 
 let mapStateToProps = (state) => state.a;
 
-export default connect(mapStateToProps, actions)(A);
+let mapDispatchToProps = (dispatch) => ({
+  add() {
+    dispatch({ type: 'ADDA' });
+  },
+  jian() {
+    dispatch({ type: 'JIANA' });
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(A);
