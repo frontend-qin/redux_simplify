@@ -1,23 +1,4 @@
-# 1. Redux 应用场景
-
-- 随着 JavaScript 单页应用开发日趋复杂,管理不断变化的 state 非常困难
-- Redux 的出现就是为了解决 state 里的数据问题
-- 在 React 中，数据在组件中是单向流动的
-- 数据从一个方向父组件流向子组件(通过 props)，由于这个特征，两个非父子关系的组件（或者称作兄弟组件）之间的通信就比较麻烦
-
-# 2. 设计思想
-
-- Redux 是将整个应用状态存储到一个地方， 成为 store, 里边保存一棵状态树（state tree）
-- 组件可以派发 dispatch 行为（action） 给 store， 而不是直接通知其它组件
-- 组件可以通过订阅 store 中的状态（state） 来刷新自己的试图
-
-# 3. Redux 三原则
-
-- 整个应用的 state 被存储在 一颗 object tree 中， 并且这个 object tree 只存在于唯一 一个 store 中
-- State 是只读的， 唯一改变 state 的方法， 就是触发 action， action 是一个用于描述已发生事件的普通对象， 使用纯函数来执行修改， 为了描述 action 如何改变 state tree， 就需要编写 reducers
-- 单一数据源的设计让 React 组件之间的通信更加方便，便于状态的统一管理
-
-# 4. 20 行代码一步步，手写 redux
+#### 4. redux base API
 
 ```javascript
 function createStore(reducer) {
@@ -45,7 +26,7 @@ function createStore(reducer) {
 }
 ```
 
-# 5. bindActionCreators
+#### 5. bindActionCreators
 
 ```javascript
 export default function bindActionCreators(actionCreators, dispatch) {
@@ -66,7 +47,7 @@ export default function bindActionCreators(actionCreators, dispatch) {
 }
 ```
 
-# 6. 实现 react-redux
+#### 6. 实现 react-redux
 
 - index.js
 
@@ -143,7 +124,7 @@ export default function connect(mapStateToProps, actions) {
 }
 ```
 
-# 7. 实现 redux 中间价
+#### 7. 实现 redux 中间价
 
 ```javascript
 import compose from './compose';
@@ -168,7 +149,7 @@ export default function applyMiddleWare(...middleWares) {
 }
 ```
 
-# 8. 实现 compose
+#### 8. 实现 compose
 
 ```javascript
 export default function compose(...fns) {
@@ -178,17 +159,7 @@ export default function compose(...fns) {
 }
 ```
 
-# 9. 实现 compose
-
-```javascript
-export default function compose(...fns) {
-  if (fns.length === 0) return (args) => args;
-  if (fns.length === 1) return (...args) => fns[0](...args);
-  return fns.reduce((a, b) => (...args) => a(b(...args)));
-}
-```
-
-# 10. 实现 合并 reducer
+#### 9. 实现 合并 reducer
 
 ```javascript
 export default function combineReducers(reducers) {
@@ -208,7 +179,7 @@ export default function combineReducers(reducers) {
 }
 ```
 
-# 11. 实现一个中间件 redux-logger
+#### 10. 实现一个中间件 redux-logger
 
 ```javascript
 export default function ({ getState }) {
@@ -222,7 +193,7 @@ export default function ({ getState }) {
 }
 ```
 
-# 12. 实现一个中间件 redux-thunk
+#### 11. 实现一个中间件 redux-thunk
 
 ```javascript
 export default function ({ dispatch }) {
@@ -234,7 +205,7 @@ export default function ({ dispatch }) {
 }
 ```
 
-# 13. 实现一个中间件 redux-promise
+#### 12. 实现一个中间件 redux-promise
 
 ```javascript
 export default function ({ dispatch }) {
