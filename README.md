@@ -99,6 +99,8 @@ class Provider extends Component {
 export default Provider;
 ```
 
+connect.js
+
 ```javascript
 import React, { Component } from 'react';
 import ReduxContext from './context';
