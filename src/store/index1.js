@@ -2,12 +2,20 @@ import { createStore } from './../redux';
 
 import reducers from './reducers';
 
-function compose(...fns) {
-  if (fns.length === 0) return (args) => args;
-  if (fns.length === 1) return (...args) => fns[0](...args);
-  return fns.reduce((a, b) => (...args) => a(b(...args)));
-}
+// redux 中间件核心： 对dispatch 方法进行重写，在派发前或者派发后，处理自己的逻辑
+// let dispatch = store.dispatch;
+// store.dispatch = function (action) {
+//   console.log(`老状态: ${JSON.stringify(store.getState())}`);
+//   dispatch(action);
+//   console.log(`新状态: ${JSON.stringify(store.getState())}`);
+// };
 
+// 日志打印中间件
+/**
+ *
+ * @param {*} getState 获取到状态
+ * @param {*} dispatch 重新派发动作
+ */
 const logger = function ({ getState, dispatch }) {
   return function (next) {
     // next 是调用原生的dispatch 方法
@@ -18,7 +26,8 @@ const logger = function ({ getState, dispatch }) {
     };
   };
 };
-
+// 异步中间价
+// 会走两次
 const thunk = function ({ dispatch }) {
   return function (next) {
     // next 是调用原生的dispatch 方法
@@ -32,19 +41,17 @@ const thunk = function ({ dispatch }) {
     };
   };
 };
-
-function applyMiddleWare(...middleWares) {
+// 中间件原理
+function applyMiddleWare(middleWare) {
   return function (createStore) {
-    return function (...args) {
-      let store = createStore(...args);
+    return function (reducers) {
+      let store = createStore(reducers);
       let dispatch;
-      let middleWareAPI = {
+      middleWare = middleWare({
         getState: store.getState,
         dispatch: (...args) => dispatch(...args),
-      };
-      const chain = middleWares.map((middleWare) => middleWare(middleWareAPI));
-
-      dispatch = compose(...chain)(store.dispatch);
+      });
+      dispatch = middleWare(store.dispatch);
       return {
         ...store,
         dispatch,
@@ -53,6 +60,6 @@ function applyMiddleWare(...middleWares) {
   };
 }
 
-let store = applyMiddleWare(thunk, logger)(createStore)(reducers);
+let store = applyMiddleWare(thunk)(createStore)(reducers);
 
 export default store;
